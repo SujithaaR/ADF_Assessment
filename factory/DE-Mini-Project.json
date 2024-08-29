@@ -1,0 +1,9 @@
+{
+	"name": "DE-Mini-Project",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "c0c6fe46-d3d2-4de6-a3b7-30b1ca610dd5",
+		"tenantId": "2800c0a0-70e9-49be-8733-faeaa6aced99"
+	}
+}
