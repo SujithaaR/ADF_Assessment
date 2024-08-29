@@ -26,7 +26,15 @@
 					"name": "task"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "joinuserandprojects"
@@ -35,7 +43,13 @@
 					"name": "getadmin"
 				},
 				{
-					"name": "counttotalprojects"
+					"name": "window1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "join1"
 				}
 			],
 			"scriptLines": [
@@ -91,8 +105,42 @@
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> joinuserandprojects",
 				"joinuserandprojects filter(Role=='admin') ~> getadmin",
-				"getadmin aggregate(groupBy(Admin_ID),",
-				"     TotalProjects = count(Project_ID)) ~> counttotalprojects"
+				"getadmin window(over(Username),",
+				"     NoOfProjects = count(Project_ID)) ~> window1",
+				"window1 select(mapColumn(",
+				"          Admin_ID,",
+				"          User_ID,",
+				"          AdminName = Username,",
+				"          Email,",
+				"          Role,",
+				"          Project_ID,",
+				"          Project_Title,",
+				"          Description,",
+				"          Teamlead_ID,",
+				"          Created_Date,",
+				"          NoOfProjects",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"project, task join(project@Project_ID == task@Project_ID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'report',",
+				"     tableName: 'AdminProjects',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
