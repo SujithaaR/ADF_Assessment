@@ -1,0 +1,131 @@
+{
+	"name": "DF_Cleaning_Files",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "UserTable"
+				},
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "ProjectTable"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {$oid} as string,",
+				"          username as string,",
+				"          email as string,",
+				"          password as string,",
+				"          role as string,",
+				"          {createdAt_$date_$numberLong} as string,",
+				"          {updatedAt_$date_$numberLong} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'staging',",
+				"     tableName: 'users',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> UserTable",
+				"source(output(",
+				"          {_id_$oid} as string,",
+				"          name as string,",
+				"          description as string,",
+				"          {owner_$oid} as string,",
+				"          {createdBy_$oid} as string,",
+				"          {createdAt_$date_$numberLong} as string,",
+				"          {updatedAt_$date_$numberLong} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'staging',",
+				"     tableName: 'projects',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> ProjectTable",
+				"select1 filter(!isNull(User_ID)) ~> filter1",
+				"UserTable select(mapColumn(",
+				"          User_ID = {$oid},",
+				"          Username = username,",
+				"          Email = email,",
+				"          Role = role",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"ProjectTable select(mapColumn(",
+				"          Project_ID = {_id_$oid},",
+				"          Project_Title = name,",
+				"          Description = description,",
+				"          TeamLead_ID = {owner_$oid},",
+				"          Admin_ID = {createdBy_$oid}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'prep',",
+				"     tableName: 'users',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'prep',",
+				"     tableName: 'projects',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+			]
+		}
+	}
+}

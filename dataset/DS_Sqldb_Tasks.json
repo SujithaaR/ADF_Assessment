@@ -1,0 +1,19 @@
+{
+	"name": "DS_Sqldb_Tasks",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sqldb_Files",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Mongodb_Sqldb"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "staging",
+			"table": "tasks"
+		}
+	}
+}
