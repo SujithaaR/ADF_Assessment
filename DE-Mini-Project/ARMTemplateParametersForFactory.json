@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "DE-Mini-Project"
+		},
+		"LS_Mongodb_Atlas_connectionString": {
+			"value": ""
+		},
+		"LS_Sqldb_Files_password": {
+			"value": ""
+		},
+		"LS_blob_storage_connectionString": {
+			"value": ""
+		},
+		"LS_Mongodb_Atlas_properties_typeProperties_database": {
+			"value": "test"
+		},
+		"LS_Sqldb_Files_properties_typeProperties_server": {
+			"value": "dbs-training.database.windows.net"
+		},
+		"LS_Sqldb_Files_properties_typeProperties_database": {
+			"value": "db_training"
+		},
+		"LS_Sqldb_Files_properties_typeProperties_userName": {
+			"value": "sujithaa"
+		}
+	}
+}
