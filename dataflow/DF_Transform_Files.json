@@ -1,0 +1,133 @@
+{
+	"name": "DF_Transform_Files",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "user"
+				},
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "project"
+				},
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "tasks"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "window1"
+				},
+				{
+					"name": "join3"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          User_ID as string,",
+				"          Username as string,",
+				"          Email as string,",
+				"          Role as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'prep',",
+				"     tableName: 'users',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> user",
+				"source(output(",
+				"          Project_ID as string,",
+				"          Project_Title as string,",
+				"          Description as string,",
+				"          Teamlead_ID as string,",
+				"          Admin_ID as string,",
+				"          Created_Date as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'prep',",
+				"     tableName: 'projects',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> project",
+				"source(output(",
+				"          Tasks_ID as string,",
+				"          Title as string,",
+				"          Description as string,",
+				"          Project_ID as string,",
+				"          User_ID as string,",
+				"          status as string,",
+				"          Deadline_Date as date,",
+				"          Created_Date as date,",
+				"          Updated_Date as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'prep',",
+				"     tableName: 'tasks',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> tasks",
+				"user, project join(User_ID == Admin_ID,",
+				"     joinType:'outer',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 filter(Role=='admin') ~> filter1",
+				"filter1 window(over(Admin_ID),",
+				"     TotalProjects = count(Project_ID)) ~> window1",
+				"join1, tasks join(project@Project_ID == tasks@Project_ID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join3",
+				"join3 derive(TeamLeadName = ERROR_FUNCTION('')) ~> derivedColumn1",
+				"window1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'report',",
+				"     tableName: 'TotalProjects',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}
