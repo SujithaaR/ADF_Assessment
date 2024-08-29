@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Cleaned_UserTable",
+				"name": "DF_Cleaned_Tables",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {

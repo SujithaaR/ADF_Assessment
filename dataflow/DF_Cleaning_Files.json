@@ -17,6 +17,13 @@
 						"type": "LinkedServiceReference"
 					},
 					"name": "ProjectTable"
+				},
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "TaskTable"
 				}
 			],
 			"sinks": [
@@ -25,25 +32,56 @@
 						"referenceName": "LS_Sqldb_Files",
 						"type": "LinkedServiceReference"
 					},
-					"name": "sink1"
+					"name": "usertable1"
 				},
 				{
 					"linkedService": {
 						"referenceName": "LS_Sqldb_Files",
 						"type": "LinkedServiceReference"
 					},
-					"name": "sink2"
+					"name": "projecttable1"
+				},
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "tasktable1"
 				}
 			],
 			"transformations": [
 				{
-					"name": "filter1"
+					"name": "filter"
 				},
 				{
 					"name": "select1"
 				},
 				{
-					"name": "select2"
+					"name": "select3"
+				},
+				{
+					"name": "sort"
+				},
+				{
+					"name": "cast1"
+				},
+				{
+					"name": "cast2"
+				},
+				{
+					"name": "cast3"
+				},
+				{
+					"name": "select4"
+				},
+				{
+					"name": "cast4"
+				},
+				{
+					"name": "cast5"
+				},
+				{
+					"name": "cast6"
 				}
 			],
 			"scriptLines": [
@@ -79,7 +117,25 @@
 				"     schemaName: 'staging',",
 				"     tableName: 'projects',",
 				"     isolationLevel: 'READ_UNCOMMITTED') ~> ProjectTable",
-				"select1 filter(!isNull(User_ID)) ~> filter1",
+				"source(output(",
+				"          {_id_$oid} as string,",
+				"          title as string,",
+				"          description as string,",
+				"          {project_$oid} as string,",
+				"          {assignedTo_$oid} as string,",
+				"          status as string,",
+				"          {deadline_$date_$numberLong} as string,",
+				"          {createdAt_$date_$numberLong} as string,",
+				"          {updatedAt_$date_$numberLong} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'staging',",
+				"     tableName: 'tasks',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> TaskTable",
+				"select1 filter(!isNull(User_ID)) ~> filter",
 				"UserTable select(mapColumn(",
 				"          User_ID = {$oid},",
 				"          Username = username,",
@@ -88,16 +144,61 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
+				"TaskTable select(mapColumn(",
+				"          Tasks_ID = {_id_$oid},",
+				"          Title = title,",
+				"          Description = description,",
+				"          Project_ID = {project_$oid},",
+				"          User_ID = {assignedTo_$oid},",
+				"          status,",
+				"          Deadline_Date = {deadline_$date_$numberLong},",
+				"          Created_Date = {createdAt_$date_$numberLong},",
+				"          Updated_Date = {updatedAt_$date_$numberLong}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"filter sort(asc(User_ID, true)) ~> sort",
+				"cast2 cast(output(",
+				"          Deadline_Date as date,",
+				"          Created_Date as date,",
+				"          Updated_Date as date",
+				"     ),",
+				"     errors: true) ~> cast1",
+				"cast3 cast(output(",
+				"          Deadline_Date as timestamp,",
+				"          Created_Date as timestamp,",
+				"          Updated_Date as timestamp",
+				"     ),",
+				"     errors: true) ~> cast2",
+				"select3 cast(output(",
+				"          Deadline_Date as long,",
+				"          Created_Date as long,",
+				"          Updated_Date as long",
+				"     ),",
+				"     errors: true) ~> cast3",
 				"ProjectTable select(mapColumn(",
 				"          Project_ID = {_id_$oid},",
 				"          Project_Title = name,",
 				"          Description = description,",
-				"          TeamLead_ID = {owner_$oid},",
-				"          Admin_ID = {createdBy_$oid}",
+				"          Teamlead_ID = {owner_$oid},",
+				"          Admin_ID = {createdBy_$oid},",
+				"          Created_Date = {createdAt_$date_$numberLong}",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select2",
-				"filter1 sink(allowSchemaDrift: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"select4 cast(output(",
+				"          Created_Date as long",
+				"     ),",
+				"     errors: true) ~> cast4",
+				"cast4 cast(output(",
+				"          Created_Date as timestamp",
+				"     ),",
+				"     errors: true) ~> cast5",
+				"cast5 cast(output(",
+				"          Created_Date as date",
+				"     ),",
+				"     errors: true) ~> cast6",
+				"sort sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",
@@ -110,8 +211,8 @@
 				"     recreate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
-				"select2 sink(allowSchemaDrift: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> usertable1",
+				"cast6 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",
@@ -124,7 +225,21 @@
 				"     recreate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+				"     errorHandlingOption: 'stopOnFirstError') ~> projecttable1",
+				"cast1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'prep',",
+				"     tableName: 'tasks',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> tasktable1"
 			]
 		}
 	}
