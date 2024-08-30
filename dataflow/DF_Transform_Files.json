@@ -182,7 +182,6 @@
 				"          TeamLeadName = Username,",
 				"          TaskTitle = Title,",
 				"          Deadline_Date,",
-				"          Created_Date,",
 				"          TaskDuration",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
