@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Cleaned_Data_Tasks2",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {

@@ -54,37 +54,37 @@
 			],
 			"transformations": [
 				{
-					"name": "filter"
+					"name": "FilteredNullValues"
 				},
 				{
-					"name": "select1"
+					"name": "selectfRequiredFields"
 				},
 				{
-					"name": "select3"
+					"name": "selectRequiredFieldsInTask"
 				},
 				{
-					"name": "sort"
+					"name": "SortUserID"
 				},
 				{
-					"name": "cast1"
+					"name": "ChangeToDate"
 				},
 				{
-					"name": "cast2"
+					"name": "ChangeToTimestamp"
 				},
 				{
-					"name": "cast3"
+					"name": "ChangeToLong"
 				},
 				{
-					"name": "select4"
+					"name": "selectRequiredFieldsInProject"
 				},
 				{
-					"name": "cast4"
+					"name": "ChangeDataTypetoLong"
 				},
 				{
-					"name": "cast5"
+					"name": "ChangeDataTypetoTimestamp"
 				},
 				{
-					"name": "cast6"
+					"name": "ChangeDataTypetoDate"
 				}
 			],
 			"scriptLines": [
@@ -110,7 +110,7 @@
 				"          description as string,",
 				"          {owner_$oid} as string,",
 				"          {createdBy_$oid} as string,",
-				"          {createdAt_$date_$numberLong} as string,",
+				"          {createdAt_$date_$numberLong} as date,",
 				"          {updatedAt_$date_$numberLong} as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
@@ -138,7 +138,7 @@
 				"     schemaName: 'staging',",
 				"     tableName: 'tasks',",
 				"     isolationLevel: 'READ_UNCOMMITTED') ~> TaskTable",
-				"select1 filter(!isNull(User_ID)) ~> filter",
+				"selectfRequiredFields filter(!isNull(User_ID)) ~> FilteredNullValues",
 				"UserTable select(mapColumn(",
 				"          User_ID = {$oid},",
 				"          Username = username,",
@@ -146,7 +146,7 @@
 				"          Role = role",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
+				"     skipDuplicateMapOutputs: true) ~> selectfRequiredFields",
 				"TaskTable select(mapColumn(",
 				"          Tasks_ID = {_id_$oid},",
 				"          Title = title,",
@@ -159,26 +159,26 @@
 				"          Updated_Date = {updatedAt_$date_$numberLong}",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select3",
-				"filter sort(asc(User_ID, true)) ~> sort",
-				"cast2 cast(output(",
+				"     skipDuplicateMapOutputs: true) ~> selectRequiredFieldsInTask",
+				"FilteredNullValues sort(asc(User_ID, true)) ~> SortUserID",
+				"ChangeToTimestamp cast(output(",
 				"          Deadline_Date as date,",
 				"          Created_Date as date,",
 				"          Updated_Date as date",
 				"     ),",
-				"     errors: true) ~> cast1",
-				"cast3 cast(output(",
+				"     errors: true) ~> ChangeToDate",
+				"ChangeToLong cast(output(",
 				"          Deadline_Date as timestamp,",
 				"          Created_Date as timestamp,",
 				"          Updated_Date as timestamp",
 				"     ),",
-				"     errors: true) ~> cast2",
-				"select3 cast(output(",
+				"     errors: true) ~> ChangeToTimestamp",
+				"selectRequiredFieldsInTask cast(output(",
 				"          Deadline_Date as long,",
 				"          Created_Date as long,",
 				"          Updated_Date as long",
 				"     ),",
-				"     errors: true) ~> cast3",
+				"     errors: true) ~> ChangeToLong",
 				"ProjectTable select(mapColumn(",
 				"          Project_ID = {_id_$oid},",
 				"          Project_Title = name,",
@@ -188,20 +188,20 @@
 				"          Created_Date = {createdAt_$date_$numberLong}",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select4",
-				"select4 cast(output(",
+				"     skipDuplicateMapOutputs: true) ~> selectRequiredFieldsInProject",
+				"selectRequiredFieldsInProject cast(output(",
 				"          Created_Date as long",
 				"     ),",
-				"     errors: true) ~> cast4",
-				"cast4 cast(output(",
+				"     errors: true) ~> ChangeDataTypetoLong",
+				"ChangeDataTypetoLong cast(output(",
 				"          Created_Date as timestamp",
 				"     ),",
-				"     errors: true) ~> cast5",
-				"cast5 cast(output(",
+				"     errors: true) ~> ChangeDataTypetoTimestamp",
+				"ChangeDataTypetoTimestamp cast(output(",
 				"          Created_Date as date",
 				"     ),",
-				"     errors: true) ~> cast6",
-				"sort sink(allowSchemaDrift: true,",
+				"     errors: true) ~> ChangeDataTypetoDate",
+				"SortUserID sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",
@@ -215,7 +215,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> usertable1",
-				"cast6 sink(allowSchemaDrift: true,",
+				"ChangeDataTypetoDate sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",
@@ -229,7 +229,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> projecttable1",
-				"cast1 sink(allowSchemaDrift: true,",
+				"ChangeToDate sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",

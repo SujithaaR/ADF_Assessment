@@ -1,10 +1,9 @@
 {
-	"name": "PL_Prep_to_Report",
+	"name": "PL_Report_TaskTwo",
 	"properties": {
 		"activities": [
 			{
-				"name": "DF_Transformed_Data",
-				"description": "Transformed Data from the data flow DF_Transform_Files",
+				"name": "DF_Transformed_Data_Task2",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -17,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_Transform_Files",
+						"referenceName": "DF_Transform_Files_Tasks2",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -29,7 +28,7 @@
 			}
 		],
 		"folder": {
-			"name": "TaskOne"
+			"name": "TaskTwo"
 		},
 		"annotations": []
 	}

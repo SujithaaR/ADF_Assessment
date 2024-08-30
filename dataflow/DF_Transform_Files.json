@@ -35,53 +35,53 @@
 						"referenceName": "LS_Sqldb_Files",
 						"type": "LinkedServiceReference"
 					},
-					"name": "sink1"
+					"name": "TotalProjects"
 				},
 				{
 					"linkedService": {
 						"referenceName": "LS_Sqldb_Files",
 						"type": "LinkedServiceReference"
 					},
-					"name": "sink5"
+					"name": "TotalTasks"
 				},
 				{
 					"linkedService": {
 						"referenceName": "LS_Sqldb_Files",
 						"type": "LinkedServiceReference"
 					},
-					"name": "sink6"
+					"name": "TeamMembersTasks"
 				}
 			],
 			"transformations": [
 				{
-					"name": "join1"
+					"name": "joinUserandProject"
 				},
 				{
-					"name": "filter1"
+					"name": "FilteringbasedonROLE"
 				},
 				{
-					"name": "window1"
+					"name": "CalculatingTotalProjects"
 				},
 				{
-					"name": "join2"
+					"name": "joinProjectandUser"
 				},
 				{
-					"name": "join3"
+					"name": "joinTaskTable"
 				},
 				{
-					"name": "select5"
+					"name": "selectRequiredFields"
 				},
 				{
-					"name": "aggregate1"
+					"name": "TotalTasksandStatus"
 				},
 				{
-					"name": "join4"
+					"name": "joinTaskandUser"
 				},
 				{
-					"name": "select6"
+					"name": "selectRequiredFieldsfromJoin"
 				},
 				{
-					"name": "aggregate2"
+					"name": "AggregatUsers"
 				}
 			],
 			"scriptLines": [
@@ -135,21 +135,21 @@
 				"     joinType:'outer',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1",
-				"join1 filter(Role=='admin') ~> filter1",
-				"filter1 window(over(Admin_ID),",
-				"     TotalProjects = count(Project_ID)) ~> window1",
+				"     broadcast: 'auto')~> joinUserandProject",
+				"joinUserandProject filter(Role=='admin') ~> FilteringbasedonROLE",
+				"FilteringbasedonROLE window(over(Admin_ID),",
+				"     TotalProjects = count(Project_ID)) ~> CalculatingTotalProjects",
 				"project, user join(Teamlead_ID == User_ID,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join2",
-				"join2, tasks join(project@Project_ID == tasks@Project_ID,",
+				"     broadcast: 'auto')~> joinProjectandUser",
+				"joinProjectandUser, tasks join(project@Project_ID == tasks@Project_ID,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join3",
-				"join3 select(mapColumn(",
+				"     broadcast: 'auto')~> joinTaskTable",
+				"joinTaskTable select(mapColumn(",
 				"          Project_Title,",
 				"          Username,",
 				"          Tasks_ID,",
@@ -161,19 +161,18 @@
 				"          Created_Date = tasks@Created_Date",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select5",
-				"select5 aggregate(groupBy(Username),",
+				"     skipDuplicateMapOutputs: true) ~> selectRequiredFields",
+				"selectRequiredFields aggregate(groupBy(Username),",
 				"     TotalTasks = count(Tasks_ID),",
-				"          completedTasks = countIf(status == 'completed')\r",
-				",",
+				"          completedTasks = countIf(status == 'completed'),",
 				"          {Pending Tasks} = countIf(status=='pending'),",
-				"          {InProgress Tasks} = countIf(status=='in progress')) ~> aggregate1",
+				"          {InProgress Tasks} = countIf(status=='in progress')) ~> TotalTasksandStatus",
 				"tasks, user join(tasks@User_ID == user@User_ID,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join4",
-				"join4 select(mapColumn(",
+				"     broadcast: 'auto')~> joinTaskandUser",
+				"joinTaskandUser select(mapColumn(",
 				"          Tasks_ID,",
 				"          Title,",
 				"          status,",
@@ -184,13 +183,13 @@
 				"          Role",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select6",
-				"select6 aggregate(groupBy(Username),",
+				"     skipDuplicateMapOutputs: true) ~> selectRequiredFieldsfromJoin",
+				"selectRequiredFieldsfromJoin aggregate(groupBy(Username),",
 				"     TotalTeamMemberTasks = count(Tasks_ID),",
 				"          CompletedTasks = countIf(status==\"completed\"),",
 				"          PendingTasks = countIf(status==\"pending\"),",
-				"          InprogressTasks = countIf(status==\"in progress\")) ~> aggregate2",
-				"window1 sink(allowSchemaDrift: true,",
+				"          InprogressTasks = countIf(status==\"in progress\")) ~> AggregatUsers",
+				"CalculatingTotalProjects sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",
@@ -203,8 +202,8 @@
 				"     recreate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
-				"aggregate1 sink(allowSchemaDrift: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> TotalProjects",
+				"TotalTasksandStatus sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",
@@ -217,8 +216,8 @@
 				"     recreate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink5",
-				"aggregate2 sink(allowSchemaDrift: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> TotalTasks",
+				"AggregatUsers sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",
@@ -231,7 +230,7 @@
 				"     recreate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink6"
+				"     errorHandlingOption: 'stopOnFirstError') ~> TeamMembersTasks"
 			]
 		}
 	}
