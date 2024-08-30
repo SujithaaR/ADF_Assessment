@@ -1,0 +1,92 @@
+{
+	"name": "DS_Blob_Products",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_blob_storage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "products.csv",
+				"container": "question2-input-files"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "department_code",
+				"type": "String"
+			},
+			{
+				"name": "category_code",
+				"type": "String"
+			},
+			{
+				"name": "category_name",
+				"type": "String"
+			},
+			{
+				"name": "search_category_code",
+				"type": "String"
+			},
+			{
+				"name": "series_code",
+				"type": "String"
+			},
+			{
+				"name": "series_name",
+				"type": "String"
+			},
+			{
+				"name": "brand_code",
+				"type": "String"
+			},
+			{
+				"name": "brand_url_code",
+				"type": "String"
+			},
+			{
+				"name": "brand_name",
+				"type": "String"
+			},
+			{
+				"name": "min_standard_days_to_ship",
+				"type": "String"
+			},
+			{
+				"name": "max_standard_days_to_ship",
+				"type": "String"
+			},
+			{
+				"name": "direct_cart_type",
+				"type": "String"
+			},
+			{
+				"name": "price_check_less_flag",
+				"type": "String"
+			},
+			{
+				"name": "min_standard_unit_price",
+				"type": "String"
+			},
+			{
+				"name": "max_standard_unit_price",
+				"type": "String"
+			},
+			{
+				"name": "min_price_per_piece",
+				"type": "String"
+			},
+			{
+				"name": "max_price_per_piece",
+				"type": "String"
+			}
+		]
+	}
+}

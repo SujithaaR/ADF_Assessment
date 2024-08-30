@@ -1,10 +1,9 @@
 {
-	"name": "PL_Stage_to_Prep",
+	"name": "PL_Stage_to_Prep_Tasks2",
 	"properties": {
 		"activities": [
 			{
-				"name": "DF_Cleaned_Tables",
-				"description": "Cleaned Data from the data flow DF_Cleaning_Files",
+				"name": "Data flow1",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -17,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_Cleaning_Files",
+						"referenceName": "DF_Cleaning_Files_Task2",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -29,7 +28,7 @@
 			}
 		],
 		"folder": {
-			"name": "TaskOne"
+			"name": "TaskTwo"
 		},
 		"annotations": []
 	}

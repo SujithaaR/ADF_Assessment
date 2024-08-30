@@ -1,6 +1,9 @@
 {
 	"name": "DF_Transform_Files",
 	"properties": {
+		"folder": {
+			"name": "TaskOne"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
@@ -39,21 +42,14 @@
 						"referenceName": "LS_Sqldb_Files",
 						"type": "LinkedServiceReference"
 					},
-					"name": "sink2"
+					"name": "sink5"
 				},
 				{
 					"linkedService": {
 						"referenceName": "LS_Sqldb_Files",
 						"type": "LinkedServiceReference"
 					},
-					"name": "sink3"
-				},
-				{
-					"linkedService": {
-						"referenceName": "LS_Sqldb_Files",
-						"type": "LinkedServiceReference"
-					},
-					"name": "sink4"
+					"name": "sink6"
 				}
 			],
 			"transformations": [
@@ -73,28 +69,19 @@
 					"name": "join3"
 				},
 				{
-					"name": "select1"
+					"name": "select5"
 				},
 				{
 					"name": "aggregate1"
 				},
 				{
-					"name": "derivedColumn1"
-				},
-				{
-					"name": "select2"
-				},
-				{
-					"name": "select3"
-				},
-				{
 					"name": "join4"
 				},
 				{
-					"name": "select4"
+					"name": "select6"
 				},
 				{
-					"name": "filter2"
+					"name": "aggregate2"
 				}
 			],
 			"scriptLines": [
@@ -162,69 +149,47 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join3",
-				"select3 select(mapColumn(",
-				"          Project_Title,",
-				"          Username,",
-				"          Title,",
-				"          status,",
-				"          Deadline_Date,",
-				"          Created_Date = tasks@Created_Date,",
-				"          Updated_Date,",
-				"          Tasks_ID,",
-				"          Project_ID = tasks@Project_ID",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 aggregate(groupBy(Username),",
-				"     TotalTasks = count(Project_ID)) ~> aggregate1",
-				"select1 derive(TaskDuration = (toLong(toTimestamp(Deadline_Date)) - toLong(toTimestamp(Created_Date))) / 86400000) ~> derivedColumn1",
-				"derivedColumn1 select(mapColumn(",
-				"          TeamLeadName = Username,",
-				"          TaskTitle = Title,",
-				"          Deadline_Date,",
-				"          TaskDuration",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select2",
 				"join3 select(mapColumn(",
-				"          Project_ID = project@Project_ID,",
 				"          Project_Title,",
-				"          Description = project@Description,",
-				"          Teamlead_ID,",
-				"          Admin_ID,",
-				"          Created_Date = project@Created_Date,",
-				"          User_ID = user@User_ID,",
 				"          Username,",
-				"          Email,",
-				"          Role,",
 				"          Tasks_ID,",
 				"          Title,",
-				"          Description = tasks@Description,",
 				"          Project_ID = tasks@Project_ID,",
 				"          User_ID = tasks@User_ID,",
 				"          status,",
 				"          Deadline_Date,",
-				"          Created_Date = tasks@Created_Date,",
-				"          Updated_Date",
+				"          Created_Date = tasks@Created_Date",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select3",
+				"     skipDuplicateMapOutputs: true) ~> select5",
+				"select5 aggregate(groupBy(Username),",
+				"     TotalTasks = count(Tasks_ID),",
+				"          completedTasks = countIf(status == 'completed')\r",
+				",",
+				"          {Pending Tasks} = countIf(status=='pending'),",
+				"          {InProgress Tasks} = countIf(status=='in progress')) ~> aggregate1",
 				"tasks, user join(tasks@User_ID == user@User_ID,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join4",
 				"join4 select(mapColumn(",
+				"          Tasks_ID,",
 				"          Title,",
 				"          status,",
 				"          Deadline_Date,",
 				"          Created_Date,",
+				"          User_ID = user@User_ID,",
 				"          Username,",
 				"          Role",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select4",
-				"select4 filter(status==\"completed\") ~> filter2",
+				"     skipDuplicateMapOutputs: true) ~> select6",
+				"select6 aggregate(groupBy(Username),",
+				"     TotalTeamMemberTasks = count(Tasks_ID),",
+				"          CompletedTasks = countIf(status==\"completed\"),",
+				"          PendingTasks = countIf(status==\"pending\"),",
+				"          InprogressTasks = countIf(status==\"in progress\")) ~> aggregate2",
 				"window1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
@@ -244,7 +209,7 @@
 				"     format: 'table',",
 				"     store: 'sqlserver',",
 				"     schemaName: 'report',",
-				"     tableName: 'TeamleadTasks',",
+				"     tableName: 'TaskDetails',",
 				"     insertable: true,",
 				"     updateable: false,",
 				"     deletable: false,",
@@ -252,26 +217,13 @@
 				"     recreate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink2",
-				"select2 sink(allowSchemaDrift: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink5",
+				"aggregate2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",
 				"     schemaName: 'report',",
-				"     tableName: 'report',",
-				"     insertable: true,",
-				"     updateable: false,",
-				"     deletable: false,",
-				"     upsertable: false,",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink3",
-				"filter2 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     format: 'table',",
-				"     store: 'sqlserver',",
-				"     schemaName: 'report',",
-				"     tableName: 'CompletedTasks',",
+				"     tableName: 'TeamMemberUpdate',",
 				"     insertable: true,",
 				"     updateable: false,",
 				"     deletable: false,",
@@ -279,7 +231,7 @@
 				"     recreate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink4"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink6"
 			]
 		}
 	}

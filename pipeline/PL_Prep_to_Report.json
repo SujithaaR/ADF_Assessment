@@ -1,9 +1,10 @@
 {
-	"name": "pipeline2",
+	"name": "PL_Prep_to_Report",
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Transformed_Data",
+				"description": "Transformed Data from the data flow DF_Transform_Files",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -27,6 +28,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "TaskOne"
+		},
 		"annotations": []
 	}
 }

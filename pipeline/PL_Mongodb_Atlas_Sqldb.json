@@ -3,7 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Copy_User_Data",
+				"description": "Getting the user data from mongodb atlas",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -110,11 +111,12 @@
 				]
 			},
 			{
-				"name": "Copy data2",
+				"name": "Copy_Project_Data",
+				"description": "Getting the project data from mongodb atlas",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "Copy_User_Data",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -224,11 +226,12 @@
 				]
 			},
 			{
-				"name": "Copy data3",
+				"name": "Copy_Tasks_Data",
+				"description": "Getting the task data from mongodb atlas",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Copy data2",
+						"activity": "Copy_Project_Data",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -354,39 +357,11 @@
 						"type": "DatasetReference"
 					}
 				]
-			},
-			{
-				"name": "Data flow1",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "Copy data3",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "DF_Cleaning_Files",
-						"type": "DataFlowReference"
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					},
-					"traceLevel": "Fine"
-				}
 			}
 		],
+		"folder": {
+			"name": "TaskOne"
+		},
 		"annotations": []
 	}
 }

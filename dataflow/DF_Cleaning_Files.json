@@ -1,6 +1,9 @@
 {
 	"name": "DF_Cleaning_Files",
 	"properties": {
+		"folder": {
+			"name": "TaskOne"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

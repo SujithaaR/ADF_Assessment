@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "PL_Blob_to_Sqldb",
 	"properties": {
 		"activities": [
 			{

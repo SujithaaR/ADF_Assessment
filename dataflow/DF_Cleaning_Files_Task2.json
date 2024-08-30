@@ -1,0 +1,96 @@
+{
+	"name": "DF_Cleaning_Files_Task2",
+	"properties": {
+		"folder": {
+			"name": "TaskTwo"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "LS_Sqldb_Files",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "cast1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          department_code as string,",
+				"          category_code as string,",
+				"          category_name as string,",
+				"          search_category_code as string,",
+				"          series_code as string,",
+				"          series_name as string,",
+				"          brand_code as string,",
+				"          brand_url_code as string,",
+				"          brand_name as string,",
+				"          min_standard_days_to_ship as string,",
+				"          max_standard_days_to_ship as string,",
+				"          direct_cart_type as string,",
+				"          price_check_less_flag as string,",
+				"          min_standard_unit_price as string,",
+				"          max_standard_unit_price as string,",
+				"          min_price_per_piece as string,",
+				"          max_price_per_piece as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'raw',",
+				"     tableName: 'products',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source1",
+				"source1 cast(output(",
+				"          min_standard_days_to_ship as integer,",
+				"          max_standard_days_to_ship as integer,",
+				"          min_standard_unit_price as integer,",
+				"          max_standard_unit_price as integer,",
+				"          min_price_per_piece as integer,",
+				"          max_price_per_piece as integer",
+				"     ),",
+				"     errors: true) ~> cast1",
+				"cast1 derive(min_standard_unit_price = iif(isNull(min_standard_unit_price), 0, min_standard_unit_price)\r",
+				",",
+				"          max_standard_unit_price = iif(isNull(max_standard_unit_price), 0, max_standard_unit_price)\r",
+				",",
+				"          min_price_per_piece = iif(isNull(min_price_per_piece), 0, min_price_per_piece)\r",
+				",",
+				"          max_price_per_piece = iif(isNull(max_price_per_piece), 0, max_price_per_piece)\r",
+				") ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'prep',",
+				"     tableName: 'products',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}
