@@ -41,13 +41,296 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/PL_Mongodb_Atlas_Sqldb')]",
+			"name": "[concat(parameters('factoryName'), '/PL_Blob_to_Sqldb')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
 						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "department_code",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "department_code",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "category_code",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "category_code",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "category_name",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "category_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "search_category_code",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "search_category_code",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "series_code",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "series_code",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "series_name",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "series_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "brand_code",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "brand_code",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "brand_url_code",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "brand_url_code",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "brand_name",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "brand_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "min_standard_days_to_ship",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "min_standard_days_to_ship",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "max_standard_days_to_ship",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "max_standard_days_to_ship",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "direct_cart_type",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "direct_cart_type",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "price_check_less_flag",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "price_check_less_flag",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "min_standard_unit_price",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "min_standard_unit_price",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "max_standard_unit_price",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "max_standard_unit_price",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "min_price_per_piece",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "min_price_per_piece",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "max_price_per_piece",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "max_price_per_piece",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Blob_Products",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Sqldb_Products",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "TaskTwo"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_Blob_Products')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Sqldb_Products')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_Mongodb_Atlas_Sqldb')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_User_Data",
+						"description": "Getting the user data from mongodb atlas",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -156,11 +439,12 @@
 						]
 					},
 					{
-						"name": "Copy data2",
+						"name": "Copy_Project_Data",
+						"description": "Getting the project data from mongodb atlas",
 						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "Copy data1",
+								"activity": "Copy_User_Data",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -272,11 +556,12 @@
 						]
 					},
 					{
-						"name": "Copy data3",
+						"name": "Copy_Tasks_Data",
+						"description": "Getting the task data from mongodb atlas",
 						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "Copy data2",
+								"activity": "Copy_Project_Data",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -404,18 +689,36 @@
 								"parameters": {}
 							}
 						]
-					},
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "TaskOne"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_Mongodb_Atlas_Users')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Sqldb_User')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Mongodb_Atlas_Projects')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Sqldb_Projects')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Mongodb_Atlas_Tasks')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Sqldb_Tasks')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_Prep_to_Report')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
 					{
-						"name": "Data flow1",
+						"name": "Transformed_Data",
+						"description": "Transformed Data from the data flow DF_Transform_Files",
 						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Copy data3",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -426,16 +729,16 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "DF_Cleaning_Files",
+								"referenceName": "DF_Transform_Files",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"UserTable": {},
-									"ProjectTable": {},
-									"TaskTable": {},
-									"usertable1": {},
-									"projecttable1": {},
-									"tasktable1": {}
+									"user": {},
+									"project": {},
+									"tasks": {},
+									"sink1": {},
+									"sink5": {},
+									"sink6": {}
 								}
 							},
 							"staging": {},
@@ -450,16 +753,13 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"folder": {
+					"name": "TaskOne"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_Mongodb_Atlas_Users')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Sqldb_User')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Mongodb_Atlas_Projects')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Sqldb_Projects')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Mongodb_Atlas_Tasks')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Sqldb_Tasks')]",
-				"[concat(variables('factoryId'), '/dataflows/DF_Cleaning_Files')]"
+				"[concat(variables('factoryId'), '/dataflows/DF_Transform_Files')]"
 			]
 		},
 		{
@@ -470,6 +770,7 @@
 				"activities": [
 					{
 						"name": "DF_Cleaned_Tables",
+						"description": "Cleaned Data from the data flow DF_Cleaning_Files",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -506,10 +807,159 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"folder": {
+					"name": "TaskOne"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/DF_Cleaning_Files')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_Stage_to_Prep_Tasks2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_Cleaning_Files_Task2",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "TaskTwo"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DF_Cleaning_Files_Task2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Blob_Products')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_blob_storage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "products.csv",
+						"container": "question2-input-files"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "department_code",
+						"type": "String"
+					},
+					{
+						"name": "category_code",
+						"type": "String"
+					},
+					{
+						"name": "category_name",
+						"type": "String"
+					},
+					{
+						"name": "search_category_code",
+						"type": "String"
+					},
+					{
+						"name": "series_code",
+						"type": "String"
+					},
+					{
+						"name": "series_name",
+						"type": "String"
+					},
+					{
+						"name": "brand_code",
+						"type": "String"
+					},
+					{
+						"name": "brand_url_code",
+						"type": "String"
+					},
+					{
+						"name": "brand_name",
+						"type": "String"
+					},
+					{
+						"name": "min_standard_days_to_ship",
+						"type": "String"
+					},
+					{
+						"name": "max_standard_days_to_ship",
+						"type": "String"
+					},
+					{
+						"name": "direct_cart_type",
+						"type": "String"
+					},
+					{
+						"name": "price_check_less_flag",
+						"type": "String"
+					},
+					{
+						"name": "min_standard_unit_price",
+						"type": "String"
+					},
+					{
+						"name": "max_standard_unit_price",
+						"type": "String"
+					},
+					{
+						"name": "min_price_per_piece",
+						"type": "String"
+					},
+					{
+						"name": "max_price_per_piece",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_blob_storage')]"
 			]
 		},
 		{
@@ -579,6 +1029,27 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LS_Mongodb_Atlas')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Sqldb_Products')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Sqldb_Files",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "raw",
+					"table": "products"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sqldb_Files')]"
 			]
 		},
 		{
@@ -710,6 +1181,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "TaskOne"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -957,10 +1431,110 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DF_Cleaning_Files_Task2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "TaskTwo"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "LS_Sqldb_Files",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "LS_Sqldb_Files",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "cast1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          department_code as string,",
+						"          category_code as string,",
+						"          category_name as string,",
+						"          search_category_code as string,",
+						"          series_code as string,",
+						"          series_name as string,",
+						"          brand_code as string,",
+						"          brand_url_code as string,",
+						"          brand_name as string,",
+						"          min_standard_days_to_ship as string,",
+						"          max_standard_days_to_ship as string,",
+						"          direct_cart_type as string,",
+						"          price_check_less_flag as string,",
+						"          min_standard_unit_price as string,",
+						"          max_standard_unit_price as string,",
+						"          min_price_per_piece as string,",
+						"          max_price_per_piece as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'raw',",
+						"     tableName: 'products',",
+						"     isolationLevel: 'READ_UNCOMMITTED') ~> source1",
+						"source1 cast(output(",
+						"          min_standard_days_to_ship as integer,",
+						"          max_standard_days_to_ship as integer,",
+						"          min_standard_unit_price as integer,",
+						"          max_standard_unit_price as integer,",
+						"          min_price_per_piece as integer,",
+						"          max_price_per_piece as integer",
+						"     ),",
+						"     errors: true) ~> cast1",
+						"cast1 derive(min_standard_unit_price = iif(isNull(min_standard_unit_price), 0, min_standard_unit_price),",
+						"          max_standard_unit_price = iif(isNull(max_standard_unit_price), 0, max_standard_unit_price),",
+						"          min_price_per_piece = iif(isNull(min_price_per_piece), 0, min_price_per_piece),",
+						"          max_price_per_piece = iif(isNull(max_price_per_piece), 0, max_price_per_piece)) ~> derivedColumn1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'prep',",
+						"     tableName: 'products',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     recreate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sqldb_Files')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DF_Transform_Files')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "TaskOne"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -993,6 +1567,20 @@
 								"type": "LinkedServiceReference"
 							},
 							"name": "sink1"
+						},
+						{
+							"linkedService": {
+								"referenceName": "LS_Sqldb_Files",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink5"
+						},
+						{
+							"linkedService": {
+								"referenceName": "LS_Sqldb_Files",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink6"
 						}
 					],
 					"transformations": [
@@ -1006,7 +1594,25 @@
 							"name": "window1"
 						},
 						{
+							"name": "join2"
+						},
+						{
 							"name": "join3"
+						},
+						{
+							"name": "select5"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "join4"
+						},
+						{
+							"name": "select6"
+						},
+						{
+							"name": "aggregate2"
 						}
 					],
 					"scriptLines": [
@@ -1064,11 +1670,56 @@
 						"join1 filter(Role=='admin') ~> filter1",
 						"filter1 window(over(Admin_ID),",
 						"     TotalProjects = count(Project_ID)) ~> window1",
-						"join1, tasks join(project@Project_ID == tasks@Project_ID,",
-						"     joinType:'left',",
+						"project, user join(Teamlead_ID == User_ID,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join2",
+						"join2, tasks join(project@Project_ID == tasks@Project_ID,",
+						"     joinType:'inner',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
 						"     broadcast: 'auto')~> join3",
+						"join3 select(mapColumn(",
+						"          Project_Title,",
+						"          Username,",
+						"          Tasks_ID,",
+						"          Title,",
+						"          Project_ID = tasks@Project_ID,",
+						"          User_ID = tasks@User_ID,",
+						"          status,",
+						"          Deadline_Date,",
+						"          Created_Date = tasks@Created_Date",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select5",
+						"select5 aggregate(groupBy(Username),",
+						"     TotalTasks = count(Tasks_ID),",
+						"          completedTasks = countIf(status == 'completed'),",
+						"          {Pending Tasks} = countIf(status=='pending'),",
+						"          {InProgress Tasks} = countIf(status=='in progress')) ~> aggregate1",
+						"tasks, user join(tasks@User_ID == user@User_ID,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join4",
+						"join4 select(mapColumn(",
+						"          Tasks_ID,",
+						"          Title,",
+						"          status,",
+						"          Deadline_Date,",
+						"          Created_Date,",
+						"          User_ID = user@User_ID,",
+						"          Username,",
+						"          Role",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select6",
+						"select6 aggregate(groupBy(Username),",
+						"     TotalTeamMemberTasks = count(Tasks_ID),",
+						"          CompletedTasks = countIf(status==\"completed\"),",
+						"          PendingTasks = countIf(status==\"pending\"),",
+						"          InprogressTasks = countIf(status==\"in progress\")) ~> aggregate2",
 						"window1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'table',",
@@ -1082,7 +1733,154 @@
 						"     recreate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+						"aggregate1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'report',",
+						"     tableName: 'TaskDetails',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     recreate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink5",
+						"aggregate2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'report',",
+						"     tableName: 'TeamMemberUpdate',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     recreate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink6"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sqldb_Files')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_Transform_Files_Tasks2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "TaskTwo"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "LS_Sqldb_Files",
+								"type": "LinkedServiceReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "LS_Sqldb_Files",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"linkedService": {
+								"referenceName": "LS_Sqldb_Files",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "aggregate2"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          department_code as string,",
+						"          category_code as string,",
+						"          category_name as string,",
+						"          search_category_code as string,",
+						"          series_code as string,",
+						"          series_name as string,",
+						"          brand_code as string,",
+						"          brand_url_code as string,",
+						"          brand_name as string,",
+						"          min_standard_days_to_ship as integer,",
+						"          max_standard_days_to_ship as integer,",
+						"          direct_cart_type as string,",
+						"          price_check_less_flag as string,",
+						"          min_standard_unit_price as integer,",
+						"          max_standard_unit_price as integer,",
+						"          min_price_per_piece as integer,",
+						"          max_price_per_piece as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'prep',",
+						"     tableName: 'products',",
+						"     isolationLevel: 'READ_UNCOMMITTED') ~> source1",
+						"source1 aggregate(groupBy(department_code,",
+						"          category_name),",
+						"     AvgMaxPrice = avg(max_standard_unit_price),",
+						"          AvgMinPrice = avg(min_standard_unit_price),",
+						"          TotalProducts = count(series_code)) ~> aggregate1",
+						"source1 aggregate(groupBy(brand_name),",
+						"     TotalProducts = count(series_code),",
+						"          MinDeliveryDays = min(min_standard_days_to_ship),",
+						"          MaxDeliveryDays = max(max_standard_days_to_ship)) ~> aggregate2",
+						"aggregate2 derive(shipping_priority = iif(MaxDeliveryDays <= 10, 'Express',\r",
+						"                        iif(MaxDeliveryDays > 50, 'Standard', 'Economy'))) ~> derivedColumn1",
+						"aggregate1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'report',",
+						"     tableName: 'CategoryMinMaxPrice',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     recreate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'report',",
+						"     tableName: 'BrandDetails',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     recreate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
 					]
 				}
 			},
