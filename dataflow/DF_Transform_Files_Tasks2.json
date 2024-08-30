@@ -13,9 +13,6 @@
 						"type": "LinkedServiceReference"
 					},
 					"name": "source1"
-				},
-				{
-					"name": "source2"
 				}
 			],
 			"sinks": [
@@ -72,8 +69,6 @@
 				"     schemaName: 'prep',",
 				"     tableName: 'products',",
 				"     isolationLevel: 'READ_UNCOMMITTED') ~> source1",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source2",
 				"source1 aggregate(groupBy(department_code,",
 				"          category_name),",
 				"     AvgMaxPrice = avg(max_standard_unit_price),",
